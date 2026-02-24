@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000/api/problems";
+const API_URL = "https://dsa-refresh.vercel.app/api/problems";
 
 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
   const url = tabs[0]?.url || "";
