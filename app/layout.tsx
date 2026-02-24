@@ -31,8 +31,8 @@ export default function RootLayout({
       >
         <SidebarProvider>
           <AppSidebar />
-          <main>
-            <SidebarTrigger />
+          <main className="flex-1 p-6">
+            <SidebarTrigger className="mb-4" />
             {children}
           </main>
         </SidebarProvider>

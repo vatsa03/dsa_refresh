@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import "./AddProblem.css";
 import { supabase } from "@/utilities/supabase_client";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 interface Problem {
   name: string;
@@ -21,12 +22,15 @@ export default function AddProblem() {
 
   async function handleSubmit(e: React.ChangeEvent) {
     e.preventDefault();
+    const dueDate = new Date();
+    dueDate.setDate(dueDate.getDate() + problem.remindInDays);
 
     await supabase.from("problems").insert({
       name: problem.name,
       link: problem.link,
       difficulty: problem.difficulty,
       remind_in_days: problem.remindInDays,
+      due_date: dueDate.toISOString(),
     });
 
     setProblem({
@@ -38,33 +42,39 @@ export default function AddProblem() {
   }
 
   return (
-    <div className="add-problem">
-      <h2 className="add-problem__title">Add a New Problem</h2>
-      <form className="add-problem__form" onSubmit={handleSubmit}>
-        <div className="add-problem__field">
-          <label className="add-problem__label">Problem Name</label>
-          <input
-            className="add-problem__input"
+    <div className="mx-auto mt-12 max-w-md">
+      <h2 className="mb-8 border-b pb-4 text-2xl font-semibold tracking-tight">
+        Add a New Problem
+      </h2>
+      <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            Problem Name
+          </label>
+          <Input
             type="text"
             placeholder="Two Sum"
             value={problem.name}
             onChange={(e) => setProblem({ ...problem, name: e.target.value })}
           />
         </div>
-        <div className="add-problem__field">
-          <label className="add-problem__label">Problem Link</label>
-          <input
-            className="add-problem__input"
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            Problem Link
+          </label>
+          <Input
             type="text"
             placeholder="https://leetcode.com/..."
             value={problem.link}
             onChange={(e) => setProblem({ ...problem, link: e.target.value })}
           />
         </div>
-        <div className="add-problem__field">
-          <label className="add-problem__label">Difficulty</label>
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            Difficulty
+          </label>
           <select
-            className="add-problem__select"
+            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             value={problem.difficulty}
             onChange={(e) =>
               setProblem({ ...problem, difficulty: e.target.value })
@@ -76,10 +86,11 @@ export default function AddProblem() {
             <option value="Hard">Hard</option>
           </select>
         </div>
-        <div className="add-problem__field">
-          <label className="add-problem__label">Remind In (Days)</label>
-          <input
-            className="add-problem__input"
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            Remind In (Days)
+          </label>
+          <Input
             type="number"
             value={problem.remindInDays}
             onChange={(e) =>
@@ -87,9 +98,9 @@ export default function AddProblem() {
             }
           />
         </div>
-        <button className="add-problem__button" type="submit">
+        <Button type="submit" className="mt-2">
           Remind Me
-        </button>
+        </Button>
       </form>
     </div>
   );
