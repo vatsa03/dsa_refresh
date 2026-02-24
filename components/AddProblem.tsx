@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "@/utilities/supabase_client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -25,12 +24,17 @@ export default function AddProblem() {
     const dueDate = new Date();
     dueDate.setDate(dueDate.getDate() + problem.remindInDays);
 
-    await supabase.from("problems").insert({
-      name: problem.name,
-      link: problem.link,
-      difficulty: problem.difficulty,
-      remind_in_days: problem.remindInDays,
-      due_date: dueDate.toISOString(),
+    await fetch("/api/problems", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: problem.name,
+        link: problem.link,
+        difficulty: problem.difficulty,
+        remind_in_days: problem.remindInDays,
+      }),
     });
 
     setProblem({

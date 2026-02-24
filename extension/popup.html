@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="header">
+      <div class="header__icon">⟡</div>
+      <span class="header__title">DSA Refresh</span>
+    </div>
+
+    <form id="form" class="form">
+      <div class="field">
+        <label class="field__label" for="url">Problem URL</label>
+        <input
+          id="url"
+          class="field__input field__input--url"
+          type="text"
+          readonly
+        />
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="name">Problem Name</label>
+        <input
+          id="name"
+          class="field__input"
+          type="text"
+          placeholder="Two Sum"
+        />
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="difficulty">Difficulty</label>
+        <select id="difficulty" class="field__select">
+          <option value="">Select</option>
+          <option value="Easy">Easy</option>
+          <option value="Medium">Medium</option>
+          <option value="Hard">Hard</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="days">Remind In (Days)</label>
+        <input
+          id="days"
+          class="field__input"
+          type="number"
+          min="0"
+          placeholder="3"
+        />
+      </div>
+
+      <button id="submit-btn" class="button" type="submit">Save Problem</button>
+    </form>
+
+    <div id="status" class="status"></div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

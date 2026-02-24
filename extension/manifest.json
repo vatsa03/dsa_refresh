@@ -1,0 +1,10 @@
+{
+  "name": "DSA Refresh",
+  "description": "Save coding problems to revisit later with spaced repetition",
+  "version": "1.0",
+  "manifest_version": 3,
+  "permissions": ["activeTab"],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
