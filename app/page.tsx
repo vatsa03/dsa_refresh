@@ -11,11 +11,16 @@ interface Problem {
 }
 
 export default async function Home() {
+  console.log(process.env.NEXT_PUBLIC_SUPABASE_URL);
   const { data: problems, error } = await supabase
     .from("problems")
     .select("*")
     .lte("due_date", new Date().toISOString())
     .overrideTypes<Problem[]>();
+  if (error) {
+    console.error("Error fetching problems:", error);
+    return <div>Error loading problems.</div>;
+  }
   return (
     <div>
       Today's Problems
