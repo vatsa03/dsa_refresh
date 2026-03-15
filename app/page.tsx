@@ -1,4 +1,5 @@
 import { supabase } from "@/utilities/supabase_client";
+import ProblemCard from "@/components/ProblemCard";
 
 interface Problem {
   id: number;
@@ -11,30 +12,38 @@ interface Problem {
 }
 
 export default async function Home() {
-  console.log(process.env.NEXT_PUBLIC_SUPABASE_URL);
   const { data: problems, error } = await supabase
     .from("problems")
     .select("*")
     .lte("due_date", new Date().toISOString())
     .overrideTypes<Problem[]>();
+
   if (error) {
     console.error("Error fetching problems:", error);
-    return <div>Error loading problems.</div>;
+    return (
+      <div className="flex items-center justify-center p-12 text-destructive">
+        Error loading problems.
+      </div>
+    );
   }
+
   return (
-    <div>
-      Today's Problems
-      {problems?.map((problem) => (
-        <div key={problem.id} className="my-4 rounded-lg border p-4">
-          <a href={problem.link} className="text-lg font-semibold text-primary">
-            {problem.name}
-          </a>
-          <p className="text-sm text-muted-foreground">
-            Difficulty: {problem.difficulty} | Remind in:{" "}
-            {problem.remind_in_days} days
-          </p>
+    <div className="mx-auto max-w-2xl">
+      <h1 className="mb-6 border-b pb-4 text-2xl font-semibold tracking-tight">
+        Today&apos;s Problems
+      </h1>
+
+      {problems?.length === 0 ? (
+        <p className="py-12 text-center text-muted-foreground">
+          🎉 No problems due today — you&apos;re all caught up!
+        </p>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {problems?.map((problem) => (
+            <ProblemCard key={problem.id} problem={problem} />
+          ))}
         </div>
-      ))}
+      )}
     </div>
   );
 }
