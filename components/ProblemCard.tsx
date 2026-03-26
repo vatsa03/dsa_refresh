@@ -27,50 +27,49 @@ function getDifficultyColor(difficulty: string) {
 
 export default function ProblemCard({ problem }: { problem: Problem }) {
   return (
-    <div className="flex flex-col gap-3 rounded-lg border p-4">
-      <div className="flex items-center gap-3">
-        <a
-          href={problem.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-medium text-primary hover:underline"
-        >
-          {problem.name}
-        </a>
-        <span
-          className={`rounded-full px-2 py-0.5 text-xs font-medium ${getDifficultyColor(problem.difficulty)}`}
-        >
-          {problem.difficulty}
-        </span>
-      </div>
-
+    <div className="flex flex-col gap-4 rounded-lg border p-5">
       <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <a
+            href={problem.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-primary hover:underline"
+          >
+            {problem.name}
+          </a>
+          <span
+            className={`rounded-full px-2 py-0.5 text-xs font-medium ${getDifficultyColor(problem.difficulty)}`}
+          >
+            {problem.difficulty}
+          </span>
+        </div>
         <span className="text-sm text-muted-foreground">
           Due: {new Date(problem.due_date).toLocaleDateString("en-IN")}
         </span>
+      </div>
 
-        <div className="flex items-center gap-2">
-          <form
-            action={rescheduleProblem}
-            className="flex items-center gap-1.5"
+      <div className="flex items-center gap-3 border-t pt-4">
+        <form action={rescheduleProblem} className="flex items-center gap-2">
+          <input type="hidden" name="problemId" value={problem.id} />
+          <label className="text-sm text-muted-foreground">Remind in</label>
+          <input
+            type="number"
+            name="days"
+            min={1}
+            defaultValue={5}
+            className="h-8 w-16 rounded-md border px-2 text-center text-sm"
+          />
+          <label className="text-sm text-muted-foreground">days</label>
+          <button
+            type="submit"
+            className="ml-1 h-8 rounded-md border px-3 text-sm font-medium hover:bg-accent"
           >
-            <input type="hidden" name="problemId" value={problem.id} />
-            <input
-              type="number"
-              name="days"
-              min={1}
-              placeholder="Days"
-              defaultValue={5}
-              className="h-8 w-20 rounded-md border px-2 text-sm"
-            />
-            <button
-              type="submit"
-              className="h-8 rounded-md border px-3 text-sm font-medium hover:bg-accent"
-            >
-              Mark as done
-            </button>
-          </form>
+            Reschedule
+          </button>
+        </form>
 
+        <div className="ml-auto">
           <form action={deleteProblem}>
             <input type="hidden" name="problemId" value={problem.id} />
             <button
