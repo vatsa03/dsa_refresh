@@ -14,14 +14,20 @@ interface Problem {
 }
 
 export default async function Home() {
-  const { data: problems, error } = await supabase
+  const { data: overdue_problems, error: overdue_error } = await supabase
     .from("problems")
     .select("*")
-    .lte("due_date", new Date().toISOString())
+    .lt("due_date", new Date().toISOString())
     .overrideTypes<Problem[]>();
 
-  if (error) {
-    console.error("Error fetching problems:", error);
+  const { data: problems, error: problem_error } = await supabase
+    .from("problems")
+    .select("*")
+    .eq("due_date", new Date().toISOString())
+    .overrideTypes<Problem[]>();
+
+  if (overdue_error || problem_error) {
+    console.error("Error fetching problems:", overdue_error || problem_error);
     return (
       <div className="flex items-center justify-center p-12 text-destructive">
         Error loading problems.
@@ -30,22 +36,42 @@ export default async function Home() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl">
-      <h1 className="mb-6 border-b pb-4 text-2xl font-semibold tracking-tight">
-        Today&apos;s Problems
-      </h1>
+    <div className="mx-auto flex max-w-2xl flex-col gap-12">
+      <section>
+        <h1 className="mb-4 text-2xl font-semibold tracking-tight">
+          Overdue Problems
+        </h1>
+        <hr className="mb-6" />
+        {overdue_problems?.length === 0 ? (
+          <p className="py-8 text-center text-muted-foreground">
+            🎉 No overdue problems — you&apos;re all caught up!
+          </p>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {overdue_problems?.map((problem) => (
+              <ProblemCard key={problem.id} problem={problem} />
+            ))}
+          </div>
+        )}
+      </section>
 
-      {problems?.length === 0 ? (
-        <p className="py-12 text-center text-muted-foreground">
-          🎉 No problems due today — you&apos;re all caught up!
-        </p>
-      ) : (
-        <div className="flex flex-col gap-3">
-          {problems?.map((problem) => (
-            <ProblemCard key={problem.id} problem={problem} />
-          ))}
-        </div>
-      )}
+      <section>
+        <h1 className="mb-4 text-2xl font-semibold tracking-tight">
+          Today&apos;s Problems
+        </h1>
+        <hr className="mb-6" />
+        {problems?.length === 0 ? (
+          <p className="py-8 text-center text-muted-foreground">
+            🎉 No problems due today — you&apos;re all caught up!
+          </p>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {problems?.map((problem) => (
+              <ProblemCard key={problem.id} problem={problem} />
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 }
