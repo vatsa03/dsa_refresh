@@ -1,6 +1,8 @@
 import { supabase } from "@/utilities/supabase_client";
 import ProblemCard from "@/components/ProblemCard";
 
+export const dynamic = "force-dynamic";
+
 interface Problem {
   id: number;
   name: string;

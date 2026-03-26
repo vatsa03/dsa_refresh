@@ -46,7 +46,7 @@ export default function ProblemCard({ problem }: { problem: Problem }) {
 
       <div className="flex items-center justify-between">
         <span className="text-sm text-muted-foreground">
-          Due: {new Date(problem.due_date).toLocaleDateString()}
+          Due: {new Date(problem.due_date).toLocaleDateString("en-IN")}
         </span>
 
         <div className="flex items-center gap-2">
