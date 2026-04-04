@@ -26,19 +26,13 @@ const schedule: DaySchedule[] = [
         id: "mon-am",
         time: "Morning",
         duration: "25 min",
-        title: "1 DSA problem",
-      },
-      {
-        id: "mon-af",
-        time: "Afternoon",
-        duration: "25 min",
-        title: "AI news",
+        title: "DSA problem",
       },
       {
         id: "mon-pm",
         time: "Evening",
         duration: "45 min",
-        title: "System design study",
+        title: "System design",
       },
     ],
   },
@@ -50,19 +44,13 @@ const schedule: DaySchedule[] = [
         id: "tue-am",
         time: "Morning",
         duration: "25 min",
-        title: "1 DSA problem",
+        title: "DSA problems",
       },
       {
         id: "tue-af",
         time: "Afternoon",
         duration: "25 min",
-        title: "tech article",
-      },
-      {
-        id: "tue-pm",
-        time: "Evening",
-        duration: "45 min",
-        title: "Deep DSA session",
+        title: "System design",
       },
     ],
   },
@@ -74,20 +62,13 @@ const schedule: DaySchedule[] = [
         id: "wed-am",
         time: "Morning",
         duration: "25 min",
-        title: "1 DSA problem",
-      },
-      {
-        id: "wed-af",
-        time: "Afternoon",
-        duration: "25 min",
-        title: "AI news",
+        title: "DSA problems",
       },
       {
         id: "wed-pm",
         time: "Evening",
-        duration: "REST",
-        title: "No studying — protect this",
-        isRest: true,
+        duration: "25 min",
+        title: "System design",
       },
     ],
   },
@@ -105,13 +86,7 @@ const schedule: DaySchedule[] = [
         id: "thu-af",
         time: "Afternoon",
         duration: "25 min",
-        title: "tech article",
-      },
-      {
-        id: "thu-pm",
-        time: "Evening",
-        duration: "45 min",
-        title: "Work knowledge deep dive",
+        title: "System design",
       },
     ],
   },
@@ -123,13 +98,13 @@ const schedule: DaySchedule[] = [
         id: "fri-am",
         time: "Morning",
         duration: "25 min",
-        title: "1 DSA problem",
+        title: "DSA problems",
       },
       {
         id: "fri-af",
         time: "Afternoon",
         duration: "25 min",
-        title: "weekly review",
+        title: "System design",
       },
       {
         id: "fri-pm",
@@ -145,10 +120,22 @@ const schedule: DaySchedule[] = [
     shortDay: "Sat",
     tasks: [
       {
+        id: "sat-morning",
+        time: "Flexible",
+        duration: "3–4 hours",
+        title: "DSA Problems",
+      },
+      {
         id: "sat",
         time: "Flexible",
         duration: "3–4 hours",
         title: "Build: side project or system",
+      },
+      {
+        id: "sat-af",
+        time: "Flexible",
+        duration: "3–4 hours",
+        title: "AI News and tools",
       },
     ],
   },
@@ -157,7 +144,19 @@ const schedule: DaySchedule[] = [
     shortDay: "Sun",
     tasks: [
       {
+        id: "sun-morning",
+        time: "Flexible",
+        duration: "3–4 hours",
+        title: "DSA Problems",
+      },
+      {
         id: "sun",
+        time: "Flexible",
+        duration: "1–2 hours",
+        title: "Build: side project or system",
+      },
+      {
+        id: "sun-afternoon",
         time: "Flexible",
         duration: "1–2 hours",
         title: "Plan next week · reflect · light reading",
@@ -373,9 +372,6 @@ export default function ThisWeekPage() {
                             </span>
                           )}
                         </div>
-                        <p className="text-xs text-muted-foreground">
-                          {task.time} · {task.duration}
-                        </p>
                       </div>
                     </label>
                   );
