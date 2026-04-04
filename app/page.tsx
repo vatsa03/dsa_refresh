@@ -39,24 +39,6 @@ export default async function Home() {
     <div className="mx-auto flex max-w-2xl flex-col gap-12">
       <section>
         <h1 className="mb-4 text-2xl font-semibold tracking-tight">
-          Overdue Problems
-        </h1>
-        <hr className="mb-6" />
-        {overdue_problems?.length === 0 ? (
-          <p className="py-8 text-center text-muted-foreground">
-            🎉 No overdue problems — you&apos;re all caught up!
-          </p>
-        ) : (
-          <div className="flex flex-col gap-3">
-            {overdue_problems?.map((problem) => (
-              <ProblemCard key={problem.id} problem={problem} />
-            ))}
-          </div>
-        )}
-      </section>
-
-      <section>
-        <h1 className="mb-4 text-2xl font-semibold tracking-tight">
           Today&apos;s Problems
         </h1>
         <hr className="mb-6" />
@@ -67,6 +49,24 @@ export default async function Home() {
         ) : (
           <div className="flex flex-col gap-3">
             {problems?.map((problem) => (
+              <ProblemCard key={problem.id} problem={problem} />
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section>
+        <h1 className="mb-4 text-2xl font-semibold tracking-tight">
+          Overdue Problems
+        </h1>
+        <hr className="mb-6" />
+        {overdue_problems?.length === 0 ? (
+          <p className="py-8 text-center text-muted-foreground">
+            🎉 No overdue problems — you&apos;re all caught up!
+          </p>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {overdue_problems?.map((problem) => (
               <ProblemCard key={problem.id} problem={problem} />
             ))}
           </div>
