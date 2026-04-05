@@ -7,14 +7,6 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
-function getWeekKey() {
-  const now = new Date();
-  const start = new Date(now.getFullYear(), 0, 1);
-  const diff = now.getTime() - start.getTime();
-  const week = Math.ceil((diff / 86400000 + start.getDay() + 1) / 7);
-  return `${now.getFullYear()}-W${String(week).padStart(2, "0")}`;
-}
-
 export async function OPTIONS() {
   return NextResponse.json({}, { headers: corsHeaders });
 }
@@ -22,11 +14,17 @@ export async function OPTIONS() {
 export async function POST(request: NextRequest) {
   const body = await request.json();
 
-  const { error } = await supabase.from("week_data").upsert({
-    week_key: body.id,
-    notes: body.notes,
-    tasks_completed: body.tasks_completed,
-  });
+  const { error } = await supabase.from("week_data").upsert(
+    {
+      week_key: body.id,
+      notes: body.notes,
+      tasks_completed: body.tasks_completed,
+      ...(body.weekly_checks !== undefined && {
+        weekly_checks: body.weekly_checks,
+      }),
+    },
+    { onConflict: "week_key" },
+  );
 
   if (error) {
     console.error("Error saving week data:", error);

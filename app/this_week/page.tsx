@@ -215,7 +215,7 @@ export default function ThisWeekPage() {
   );
 
   useEffect(() => {
-    async function fetchNotes() {
+    async function fetchWeekData() {
       try {
         const res = await fetch(
           `/api/week_data?weekKey=${encodeURIComponent(getWeekKey())}`,
@@ -224,11 +224,14 @@ export default function ThisWeekPage() {
         if (data?.data?.notes) {
           setNotes(data.data.notes);
         }
+        if (data?.data?.weekly_checks) {
+          setChecked(data.data.weekly_checks);
+        }
       } catch {
         // silently fail
       }
     }
-    fetchNotes();
+    fetchWeekData();
   }, []);
 
   async function handleNotesSave() {
@@ -258,14 +261,31 @@ export default function ThisWeekPage() {
   function toggle(taskId: string) {
     setChecked((prev) => {
       const next = { ...prev, [taskId]: !prev[taskId] };
-      localStorage.setItem("weekly-checks", JSON.stringify(next));
+      // Save to DB
+      fetch("/api/week_data", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: getWeekKey(),
+          weekly_checks: next,
+          tasks_completed: Object.values(next).filter(Boolean).length,
+        }),
+      });
       return next;
     });
   }
 
   function resetAll() {
     setChecked({});
-    localStorage.removeItem("weekly-checks");
+    fetch("/api/week_data", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: getWeekKey(),
+        weekly_checks: {},
+        tasks_completed: 0,
+      }),
+    });
   }
 
   const totalTasks = schedule.reduce((s, d) => s + d.tasks.length, 0);
