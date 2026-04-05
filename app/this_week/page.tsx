@@ -208,7 +208,7 @@ function getTodayShortDay() {
 
 export default function ThisWeekPage() {
   const [checked, setChecked] = useState<Record<string, boolean>>({});
-  const [selectedDay, setSelectedDay] = useState<string>("Mon");
+  const [selectedDay, setSelectedDay] = useState<string>(getTodayShortDay());
   const [notes, setNotes] = useState<string>("");
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">(
     "idle",
@@ -310,7 +310,8 @@ export default function ThisWeekPage() {
       {/* Day tabs */}
       <div className="flex gap-1.5 overflow-x-auto pb-1">
         {schedule.map((d) => {
-          const isActive = d.shortDay === selectedDay;
+          const isActive =
+            d.shortDay === selectedDay || d.shortDay === todayDay;
           const isToday = d.shortDay === todayDay;
           const allDone = d.tasks.every((t) => checked[t.id]);
           return (
