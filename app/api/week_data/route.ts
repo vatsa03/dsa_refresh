@@ -38,3 +38,23 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json({ success: true }, { headers: corsHeaders });
 }
+
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const weekKey = searchParams.get("weekKey");
+  const { data, error } = await supabase
+    .from("week_data")
+    .select("*")
+    .eq("week_key", weekKey)
+    .single();
+
+  if (error) {
+    console.error("Error fetching week data:", error);
+    return NextResponse.json(
+      { error: error.message },
+      { status: 500, headers: corsHeaders },
+    );
+  }
+
+  return NextResponse.json({ data }, { headers: corsHeaders });
+}

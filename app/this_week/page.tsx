@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/utilities/supabase_client";
 
 interface Task {
@@ -174,25 +174,6 @@ function getWeekKey() {
   return `${now.getFullYear()}-W${String(week).padStart(2, "0")}`;
 }
 
-function getStoredChecks(): Record<string, boolean> {
-  if (typeof window === "undefined") return {};
-  try {
-    const stored = localStorage.getItem("weekly-checks");
-    return stored ? JSON.parse(stored) : {};
-  } catch {
-    return {};
-  }
-}
-
-function getStoredNotes(): string {
-  if (typeof window === "undefined") return "";
-  try {
-    return localStorage.getItem(`weekly-notes-${getWeekKey()}`) ?? "";
-  } catch {
-    return "";
-  }
-}
-
 function getDayAccent(shortDay: string) {
   const accents: Record<string, string> = {
     Mon: "border-l-blue-500",
@@ -226,13 +207,29 @@ function getTodayShortDay() {
 }
 
 export default function ThisWeekPage() {
-  const [checked, setChecked] =
-    useState<Record<string, boolean>>(getStoredChecks);
-  const [selectedDay, setSelectedDay] = useState<string>(getTodayShortDay);
-  const [notes, setNotes] = useState<string>(getStoredNotes);
+  const [checked, setChecked] = useState<Record<string, boolean>>({});
+  const [selectedDay, setSelectedDay] = useState<string>("Mon");
+  const [notes, setNotes] = useState<string>("");
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">(
     "idle",
   );
+
+  useEffect(() => {
+    async function fetchNotes() {
+      try {
+        const res = await fetch(
+          `/api/week_data?weekKey=${encodeURIComponent(getWeekKey())}`,
+        );
+        const data = await res.json();
+        if (data?.data?.notes) {
+          setNotes(data.data.notes);
+        }
+      } catch {
+        // silently fail
+      }
+    }
+    fetchNotes();
+  }, []);
 
   async function handleNotesSave() {
     setSaveStatus("saving");
@@ -248,7 +245,6 @@ export default function ThisWeekPage() {
           tasks_completed: Object.values(checked).filter(Boolean).length,
         }),
       });
-      //localStorage.setItem(`weekly-notes-${getWeekKey()}`, notes);
       setSaveStatus("saved");
       setTimeout(() => setSaveStatus("idle"), 2000);
     } catch {
