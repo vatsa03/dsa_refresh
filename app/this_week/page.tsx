@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { supabase } from "@/utilities/supabase_client";
 
 interface Task {
   id: string;
@@ -229,10 +230,30 @@ export default function ThisWeekPage() {
     useState<Record<string, boolean>>(getStoredChecks);
   const [selectedDay, setSelectedDay] = useState<string>(getTodayShortDay);
   const [notes, setNotes] = useState<string>(getStoredNotes);
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">(
+    "idle",
+  );
 
-  function handleNotesChange(value: string) {
-    setNotes(value);
-    localStorage.setItem(`weekly-notes-${getWeekKey()}`, value);
+  async function handleNotesSave() {
+    setSaveStatus("saving");
+    try {
+      await fetch("/api/week_data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: getWeekKey(),
+          notes,
+          tasks_completed: Object.values(checked).filter(Boolean).length,
+        }),
+      });
+      //localStorage.setItem(`weekly-notes-${getWeekKey()}`, notes);
+      setSaveStatus("saved");
+      setTimeout(() => setSaveStatus("idle"), 2000);
+    } catch {
+      setSaveStatus("idle");
+    }
   }
 
   const todayDay = getTodayShortDay();
@@ -387,16 +408,37 @@ export default function ThisWeekPage() {
         <div className="flex items-center justify-between border-b px-5 py-3">
           <span className="text-sm font-medium">📝 Week notes</span>
           <span className="text-[11px] text-muted-foreground">
-            {getWeekKey()} · auto-saved
+            {getWeekKey()}
           </span>
         </div>
         <textarea
           value={notes}
-          onChange={(e) => handleNotesChange(e.target.value)}
+          onChange={(e) => setNotes(e.target.value)}
           placeholder="Jot down wins, blockers, ideas, or anything worth remembering this week…"
           className="w-full resize-none bg-transparent px-5 py-4 text-sm leading-relaxed placeholder:text-muted-foreground/60 focus:outline-none min-h-[120px]"
           rows={5}
         />
+        <div className="flex items-center justify-end border-t px-5 py-3">
+          <button
+            onClick={handleNotesSave}
+            disabled={saveStatus === "saving"}
+            className={`inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-all duration-200 ${
+              saveStatus === "saved"
+                ? "bg-emerald-100 text-emerald-700"
+                : "bg-primary text-primary-foreground hover:bg-primary/90"
+            } disabled:opacity-50`}
+          >
+            {saveStatus === "saving" && (
+              <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent" />
+            )}
+            {saveStatus === "saved" && <span>✓</span>}
+            {saveStatus === "saving"
+              ? "Saving…"
+              : saveStatus === "saved"
+                ? "Saved!"
+                : "Save notes"}
+          </button>
+        </div>
       </div>
     </div>
   );
