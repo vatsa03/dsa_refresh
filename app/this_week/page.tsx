@@ -288,6 +288,7 @@ export default function ThisWeekPage() {
 
   function resetAll() {
     setChecked({});
+    setNotes("");
     fetch("/api/week_data", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
