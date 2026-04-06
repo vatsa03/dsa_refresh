@@ -167,11 +167,20 @@ const schedule: DaySchedule[] = [
 ];
 
 function getWeekKey() {
-  const now = new Date();
-  const start = new Date(now.getFullYear(), 0, 1);
-  const diff = now.getTime() - start.getTime();
-  const week = Math.ceil((diff / 86400000 + start.getDay() + 1) / 7);
-  return `${now.getFullYear()}-W${String(week).padStart(2, "0")}`;
+  const date = new Date();
+  date.setHours(0, 0, 0, 0);
+  // ISO week: Thursday of the current week determines the year/week number
+  date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7));
+  const jan4 = new Date(date.getFullYear(), 0, 4);
+  const week =
+    1 +
+    Math.round(
+      ((date.getTime() - jan4.getTime()) / 86400000 -
+        3 +
+        ((jan4.getDay() + 6) % 7)) /
+        7,
+    );
+  return `${date.getFullYear()}-W${String(week).padStart(2, "0")}`;
 }
 
 function getDayAccent(shortDay: string) {
@@ -245,6 +254,7 @@ export default function ThisWeekPage() {
         body: JSON.stringify({
           id: getWeekKey(),
           notes,
+          weekly_checks: checked,
           tasks_completed: Object.values(checked).filter(Boolean).length,
         }),
       });
@@ -267,6 +277,7 @@ export default function ThisWeekPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           id: getWeekKey(),
+          notes,
           weekly_checks: next,
           tasks_completed: Object.values(next).filter(Boolean).length,
         }),
@@ -282,6 +293,7 @@ export default function ThisWeekPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         id: getWeekKey(),
+        notes,
         weekly_checks: {},
         tasks_completed: 0,
       }),

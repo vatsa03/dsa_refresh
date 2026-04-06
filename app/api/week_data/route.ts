@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
     .eq("week_key", weekKey)
     .single();
 
-  if (error) {
+  if (error && error.code !== "PGRST116") {
     console.error("Error fetching week data:", error);
     return NextResponse.json(
       { error: error.message },
@@ -54,5 +54,5 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  return NextResponse.json({ data }, { headers: corsHeaders });
+  return NextResponse.json({ data: data ?? {} }, { headers: corsHeaders });
 }
