@@ -148,7 +148,7 @@ const schedule: DaySchedule[] = [
         id: "sun-morning",
         time: "Flexible",
         duration: "3–4 hours",
-        title: "DSA Problems",
+        title: "Paper",
       },
       {
         id: "sun",
